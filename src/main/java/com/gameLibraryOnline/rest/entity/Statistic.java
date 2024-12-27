@@ -20,6 +20,9 @@ public class Statistic {
     @Column(name = "nbGamesNotStarted")
     private int nbGamesNotStarted;
 
+    @Column(name = "nbGamesStarted")
+    private int nbGamesStarted;
+
     @Column(name = "nbGamesFinished")
     private int ngGamesFinished;
 
