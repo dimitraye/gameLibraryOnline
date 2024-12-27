@@ -18,4 +18,12 @@ public class Progression {
 
     @Column(name = "percentageCompletion")
     private int percentageCompletion;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
 }

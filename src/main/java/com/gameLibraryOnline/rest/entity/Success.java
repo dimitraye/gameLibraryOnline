@@ -18,4 +18,8 @@ public class Success {
 
     @Column(name = "owned")
     private Boolean owned;
+
+    @ManyToOne
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
 }
