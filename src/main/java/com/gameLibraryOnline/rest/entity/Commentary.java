@@ -28,7 +28,7 @@ public class Commentary {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "game_id", nullable = false)
-    private Game game;
+    @JoinColumn(name = "user_game_id")
+    private UserGame userGame;
 
 }

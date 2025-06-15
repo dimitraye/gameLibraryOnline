@@ -49,9 +49,9 @@ public class AuthService {
 
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getEmail()); // ou user.getUsername() selon le `UserDetailsService`
+        String token = jwtUtil.generateToken(user.getUsername());// ou user.getUsername() selon le `UserDetailsService`
 
-        return new AuthResponse("Inscription réussie", true, token);
+        return new AuthResponse("Inscription réussie", true, token, user.getRole().name());
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -62,10 +62,11 @@ public class AuthService {
 
         User user = optionalUser.get();
         if (passwordEncoder.matches(request.password, user.getPassword())) {
-            String token = jwtUtil.generateToken(user.getEmail()); // ou user.getUsername()
-            return new AuthResponse("Connexion réussie", true, token);
+            String token = jwtUtil.generateToken(user.getUsername());
+            return new AuthResponse("Connexion réussie", true, token, user.getRole().name());
         } else {
-            return new AuthResponse("Mot de passe incorrect", false, null);
+            return new AuthResponse("Mot de passe incorrect", false, null, user.getRole().name());
         }
     }
+
 }
