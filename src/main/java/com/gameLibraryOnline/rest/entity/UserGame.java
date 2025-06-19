@@ -1,5 +1,6 @@
 package com.gameLibraryOnline.rest.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,10 +25,11 @@ public class UserGame {
     private int playHours;
     private GameStatus state;
 
-    @OneToMany(mappedBy = "userGame")
-    private List<Progression> progressions;
+    @OneToOne(mappedBy = "userGame", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Progression progression;
 
     @OneToMany(mappedBy = "userGame")
+    @JsonManagedReference
     private List<Success> successes;
 
     @OneToMany(mappedBy = "userGame")
