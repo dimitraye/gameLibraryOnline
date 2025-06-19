@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.*;
 
 @RestController
@@ -62,6 +63,24 @@ public class UserGameController {
                 .toList();
         return ResponseEntity.ok(dtos);
     }
+
+    @GetMapping
+    public ResponseEntity<List<UserGameDTO>> getCurrentUserGames(Principal principal) {
+        String username = principal.getName();
+        Optional<User> userOpt = userService.findByUsername(username);
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(401).body(null);
+        }
+
+        List<UserGame> userGames = userGameService.findByUser(userOpt.get().getIdUser());
+        List<UserGameDTO> dtos = userGames.stream()
+                .map(UserGameMapper::toDTO)
+                .toList();
+
+        return ResponseEntity.ok(dtos);
+    }
+
 
     @GetMapping("/detail/{userGameId}")
     public ResponseEntity<?> getUserGameById(@PathVariable Long userGameId) {

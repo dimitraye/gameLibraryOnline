@@ -4,6 +4,7 @@ import com.gameLibraryOnline.rest.dto.GamePublicDTO;
 import com.gameLibraryOnline.rest.entity.GamePublic;
 import com.gameLibraryOnline.rest.service.GamePublicService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,19 +17,51 @@ public class GamePublicController {
     @Autowired
     private GamePublicService gamePublicService;
 
+    // GET all
     @GetMapping
     public List<GamePublicDTO> getAllPublicGames() {
-        List<GamePublic> games = gamePublicService.findAll();
-        return games.stream().map(this::toDTO).collect(Collectors.toList());
+        return gamePublicService.findAll()
+                .stream()
+                .map(gamePublicService::toDTO)
+                .collect(Collectors.toList());
     }
 
-    private GamePublicDTO toDTO(GamePublic entity) {
-        GamePublicDTO dto = new GamePublicDTO();
-        dto.setId(entity.getId());
-        dto.setTitle(entity.getTitle());
-        dto.setGenres(entity.getGenres());
-        dto.setPlatforms(entity.getPlatforms());
-        dto.setPicture(entity.getPicture());
-        return dto;
+    // GET by id
+    @GetMapping("/{id}")
+    public ResponseEntity<GamePublicDTO> getById(@PathVariable Long id) {
+        return gamePublicService.findById(id)
+                .map(gamePublicService::toDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // CREATE
+    @PostMapping
+    public ResponseEntity<GamePublicDTO> create(@RequestBody GamePublicDTO dto) {
+        GamePublic saved = gamePublicService.save(gamePublicService.dtoToEntity(dto));
+        return ResponseEntity.ok(gamePublicService.toDTO(saved));
+    }
+
+    // UPDATE
+    @PutMapping("/{id}")
+    public ResponseEntity<GamePublicDTO> update(@PathVariable Long id, @RequestBody GamePublicDTO dto) {
+        return gamePublicService.findById(id)
+                .map(existing -> {
+                    GamePublic entity = gamePublicService.dtoToEntity(dto);
+                    entity.setId(id); // assure l’update de l’existant
+                    GamePublic updated = gamePublicService.save(entity);
+                    return ResponseEntity.ok(gamePublicService.toDTO(updated));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // DELETE
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        if (gamePublicService.findById(id).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        gamePublicService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

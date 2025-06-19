@@ -1,5 +1,7 @@
 package com.gameLibraryOnline.rest.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,6 +22,11 @@ public class Success {
     private Boolean owned;
 
     @ManyToOne
-    @JoinColumn(name = "user_game_id")
+    @JsonBackReference
     private UserGame userGame;
+
+    @ManyToOne
+    @JoinColumn(name = "idUser", nullable = false)
+    private User user;
+
 }

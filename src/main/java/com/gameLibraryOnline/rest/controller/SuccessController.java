@@ -107,4 +107,16 @@ public class SuccessController {
         }
     }
 
+    @GetMapping("/user/{userId}/five")
+    public ResponseEntity<List<Success>> get5SuccessById(
+            @PathVariable Long userId
+    ) {
+        if (userId == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<Success> successes = successService.get5SuccessById(userId);
+        return ResponseEntity.ok(successes);
+    }
+
+
 }

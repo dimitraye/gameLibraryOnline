@@ -31,10 +31,25 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
+                        // PUBLIC
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        // ADMIN ONLY
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // USER + ADMIN
+                        .requestMatchers("/api/public-games/**").hasAnyRole("CLIENT", "ADMIN")
+                        .requestMatchers("/api/user-games/**").hasAnyRole("CLIENT", "ADMIN")
+                        .requestMatchers("/api/success/**").hasAnyRole("CLIENT", "ADMIN")
+                        .requestMatchers("/api/progressions/**").hasAnyRole("CLIENT", "ADMIN")
+                        .requestMatchers("/api/commentaries/**").hasAnyRole("CLIENT", "ADMIN")
+                        .requestMatchers("/api/statistics/**").hasAnyRole("CLIENT", "ADMIN")
+
+                        // Tout le reste : authentifié (prudent par défaut)
                         .anyRequest().authenticated()
                 )
+
                 .userDetailsService(userDetailsService)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

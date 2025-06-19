@@ -3,6 +3,8 @@ package com.gameLibraryOnline.rest.service;
 import com.gameLibraryOnline.rest.entity.Success;
 import com.gameLibraryOnline.rest.repository.ISuccessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +33,13 @@ public class SuccessService {
     public List<Success> findAll() {
         return successRepository.findAll();
     }
+
+    public List<Success> get5SuccessById(Long userId) {
+        Pageable pageable = PageRequest.of(0, 5);
+        return successRepository.findTopByUserId(userId, pageable);
+    }
+
+
 
 
     //Update

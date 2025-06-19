@@ -23,7 +23,7 @@ public class Progression {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "user_game_id")
+    @OneToOne
+    @JoinColumn(name = "user_game_id", unique = true, nullable = false)
     private UserGame userGame;
 }
