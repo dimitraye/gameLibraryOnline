@@ -2,13 +2,22 @@ package com.gameLibraryOnline.rest.controller;
 
 import com.gameLibraryOnline.rest.dto.GamePublicDTO;
 import com.gameLibraryOnline.rest.entity.GamePublic;
+import com.gameLibraryOnline.rest.entity.Platform;
+import com.gameLibraryOnline.rest.entity.VideoGameGenre;
 import com.gameLibraryOnline.rest.service.GamePublicService;
+import com.gameLibraryOnline.rest.service.ImageStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.gameLibraryOnline.rest.entity.GamePublic;
+import com.gameLibraryOnline.rest.service.ImageStorageService;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
 @RequestMapping("/api/public-games")
@@ -16,6 +25,9 @@ public class GamePublicController {
 
     @Autowired
     private GamePublicService gamePublicService;
+
+    @Autowired
+    private ImageStorageService imageStorageService;
 
     // GET all
     @GetMapping
@@ -64,4 +76,45 @@ public class GamePublicController {
         gamePublicService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/upload")
+    public ResponseEntity<GamePublicDTO> uploadGameWithImage(
+            @RequestParam("title") String title,
+            @RequestParam("platforms") List<String> platformStrings,
+            @RequestParam("genres") List<String> genreStrings,
+            @RequestParam("picture") MultipartFile pictureFile
+    ) {
+        try {
+            // Convertir les chaînes en énumérations
+            List<Platform> platforms = platformStrings.stream()
+                    .map(String::toUpperCase)
+                    .map(Platform::valueOf)
+                    .toList();
+
+            List<VideoGameGenre> genres = genreStrings.stream()
+                    .map(String::toUpperCase)
+                    .map(VideoGameGenre::valueOf)
+                    .toList();
+
+            // Stocker l'image
+            String filename = imageStorageService.storeImage(pictureFile, title);
+
+            // Créer le jeu public
+            GamePublic game = new GamePublic();
+            game.setTitle(title);
+            game.setPlatforms(platforms);
+            game.setGenres(genres);
+            game.setPicture("/pictures/" + filename);
+
+            GamePublic saved = gamePublicService.save(game);
+            return ResponseEntity.ok(gamePublicService.toDTO(saved));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // Si mauvaise valeur pour un enum
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+
 }
