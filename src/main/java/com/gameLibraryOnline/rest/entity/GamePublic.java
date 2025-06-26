@@ -2,9 +2,7 @@ package com.gameLibraryOnline.rest.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.List;
-
 @Data
 @Entity
 @Table(name = "game_public")
