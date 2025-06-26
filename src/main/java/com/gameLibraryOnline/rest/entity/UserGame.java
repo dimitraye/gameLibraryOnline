@@ -14,13 +14,10 @@ public class UserGame {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     private User user;
-
     @ManyToOne
     private GamePublic gamePublic;
-
     private Date datePurchase;
     private int playHours;
     private GameStatus state;

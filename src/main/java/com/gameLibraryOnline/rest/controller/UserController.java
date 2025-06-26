@@ -24,10 +24,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-
-
-
-
     //save
     @PostMapping
     public User createUser(@Validated @RequestBody(required = false) User user) {
@@ -38,6 +34,7 @@ public class UserController {
     //showAll
     @GetMapping
     public List<User> getAllUsers(@Validated @RequestBody(required = false) User user){
+
         return userService.findAll();
     }
 
