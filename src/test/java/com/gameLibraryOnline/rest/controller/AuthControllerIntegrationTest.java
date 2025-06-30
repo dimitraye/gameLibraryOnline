@@ -30,10 +30,10 @@ class AuthControllerIntegrationTest {
     @Test
     void shouldRegisterUserSuccessfully() throws Exception {
         RegisterRequest request = new RegisterRequest();
-        request.setUsername("newuser2");
+        request.setUsername("newuser3");
         request.setPassword("newpass123");
-        request.setFirstname("Mister");
-        request.setLastname("Smith");
+        request.setFirstname("Miss");
+        request.setLastname("Robinson");
         request.setEmail("newuser@example.com");
         request.setBirthDate("2000-01-01");
         request.setGender(true);
